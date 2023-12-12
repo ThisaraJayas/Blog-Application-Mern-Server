@@ -5,6 +5,9 @@ const User = require('./models/User');
 const bcrypt = require('bcrypt') //password encryption
 const jwt = require('jsonwebtoken') //create session
 const cookieParser = require('cookie-parser')
+const multer = require('multer')
+const uploadMiddleware = multer({dest: 'uploads/'}) //file upload destination
+
 const app = express();
 
 const salt= bcrypt.genSaltSync(10)//password encryption
@@ -60,5 +63,10 @@ app.get('/profile', (req,res)=>{
 })
 app.post('/logout', (req,res)=>{
     res.cookie('token','').json('ok')
+})
+
+//npm install multer
+app.post('/post', uploadMiddleware.single('file'),(req,res)=>{
+    res.json({files:req.file})
 })
 app.listen(4000)
