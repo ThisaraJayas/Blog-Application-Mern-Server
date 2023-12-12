@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken') //create session
 const cookieParser = require('cookie-parser')
 const multer = require('multer')
 const uploadMiddleware = multer({dest: 'uploads/'}) //file upload destination
+const fs = require('fs')//fs is file system we need to convert file extension
+const Post = require('./models/Post')
 
 const app = express();
 
@@ -65,8 +67,38 @@ app.post('/logout', (req,res)=>{
     res.cookie('token','').json('ok')
 })
 
+
 //npm install multer
-app.post('/post', uploadMiddleware.single('file'),(req,res)=>{
-    res.json({files:req.file})
+//this code section is to getimage when upload and store it to upload file
+app.post('/post', uploadMiddleware.single('file'),async(req,res)=>{
+    const {originalname,path} = req.file
+    const parts = originalname.split('.')
+    const ext = parts[parts.length -1]
+    const newPath = path+'.'+ext
+    fs.renameSync(path, newPath)
+
+    const {token} = req.cookies
+    jwt.verify(token, secret, {}, async (err,info)=>{
+        if(err) throw err
+        //now to grab other information
+    const {title,summary,content} = req.body
+    //postDoc means database
+const postDoc =await Post.create({
+    //there we define in Post.js class
+    title,
+    summary,
+    content,
+    cover: newPath,
+    author: info.id,
+})
+res.json(postDoc)
+    })
+
+    
+    
+})
+app.get('/post', async(req,res)=>{
+     //we define find because we need to get all the data
+    res.json(await Post.find())
 })
 app.listen(4000)
