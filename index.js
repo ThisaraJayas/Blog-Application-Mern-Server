@@ -100,8 +100,9 @@ res.json(postDoc)
 app.get('/post', async(req,res)=>{
      //we define find because we need to get all the data
 
-     //                          we add populate to get author username
+     
     res.json(await Post.find()
+    //we add populate to get author username
     .populate('author',['username'])
     //this will sort last added post at top
     .sort({createdAt: -1})
