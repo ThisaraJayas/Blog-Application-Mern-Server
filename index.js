@@ -116,4 +116,9 @@ app.get('/post/:id',async(req,res)=>{
     const postDoc = await Post.findById(id).populate('author',['username'])
     res.json(postDoc)
 })
+
+//edit post
+app.put('/post',uploadMiddleware.single('file'), async(req,res)=>{
+    if()
+})
 app.listen(4000)
