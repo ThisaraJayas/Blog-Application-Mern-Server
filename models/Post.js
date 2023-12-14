@@ -4,7 +4,7 @@ const {Schema, model}=mongoose
 const PostSchema = new Schema({
     title: String,
     summary: String,
-    context: String,
+    content: String,
     cover:String,
     author:{type:Schema.ObjectId, ref:'User'},
 },{

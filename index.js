@@ -18,6 +18,7 @@ const secret = 'dh43bjfnsnjsn839nmncxr3' //used in jsw Token
 app.use(cors({credentials:true, origin:'http://localhost:3000'})) //include additional info to cookie
 app.use(express.json())
 app.use(cookieParser())
+app.use('/uploads',express.static(__dirname + '/uploads'))
 
 mongoose.connect('mongodb+srv://bullmoney0:Thisara@practice.fbucg2s.mongodb.net/?retryWrites=true&w=majority')
 
@@ -109,5 +110,10 @@ app.get('/post', async(req,res)=>{
     //if 5000 post there it show only 20
     .limit(20)
     )
+})
+app.get('/post/:id',async(req,res)=>{
+    const {id} = req.params
+    const postDoc = await Post.findById(id).populate('author',['username'])
+    res.json(postDoc)
 })
 app.listen(4000)
